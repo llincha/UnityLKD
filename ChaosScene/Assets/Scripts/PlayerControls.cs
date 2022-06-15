@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
 {
+    float timeElapsed;
+    float lerpDuration = 3;
+    float startValue=0;
+    float endValue=5;
+    float valueToLerp;
 
     Rigidbody rb;
     [SerializeField] float speed = 6f;
@@ -22,6 +27,12 @@ public class PlayerControls : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (timeElapsed < lerpDuration)
+        {
+            valueToLerp = Mathf.Lerp(startValue, endValue, timeElapsed / lerpDuration);
+            timeElapsed += Time.deltaTime;
+        }
+
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
@@ -29,7 +40,7 @@ public class PlayerControls : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && IsGrounded())
         {
-            rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
+            rb.velocity = new Vector3(rb.velocity.x, valueToLerp, rb.velocity.z);
         }
     }
    
@@ -53,4 +64,5 @@ public class PlayerControls : MonoBehaviour
     {
        return Physics.CheckSphere(groundCheck.position, .1f, ground);
     }
+    
 }
